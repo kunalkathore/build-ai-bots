@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -61,12 +61,12 @@ function Index() {
           <a href="#playground" className="hover:text-foreground">/playground</a>
           <a href="#educators" className="hover:text-foreground">/educators</a>
         </nav>
-        <a
-          href="#playground"
+        <Link
+          to="/app/dashboard"
           className="rounded-md border border-neon bg-neon px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-transparent hover:text-neon"
         >
           Launch console
-        </a>
+        </Link>
       </header>
 
       {/* HERO */}
@@ -89,19 +89,19 @@ function Index() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href="#playground"
+              <Link
+                to="/app/playground"
                 className="group inline-flex items-center gap-3 rounded-md bg-neon px-6 py-3.5 font-mono text-sm font-semibold uppercase tracking-wider text-primary-foreground border-glow transition hover:translate-y-[-2px]"
               >
                 Start building
                 <span className="transition group-hover:translate-x-1">→</span>
-              </a>
-              <a
-                href="#curriculum"
+              </Link>
+              <Link
+                to="/app/lessons"
                 className="inline-flex items-center gap-3 rounded-md border border-border px-6 py-3.5 font-mono text-sm uppercase tracking-wider text-foreground transition hover:border-neon hover:text-neon"
               >
                 See the curriculum
-              </a>
+              </Link>
             </div>
 
             <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8">

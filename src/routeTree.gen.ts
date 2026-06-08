@@ -9,38 +9,144 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppProjectsRouteImport } from './routes/app.projects'
+import { Route as AppPlaygroundRouteImport } from './routes/app.playground'
+import { Route as AppLessonsRouteImport } from './routes/app.lessons'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppBuilderRouteImport } from './routes/app.builder'
+import { Route as AppLessonsLessonIdRouteImport } from './routes/app.lessons.$lessonId'
 
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsRoute = AppProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPlaygroundRoute = AppPlaygroundRouteImport.update({
+  id: '/playground',
+  path: '/playground',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLessonsRoute = AppLessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBuilderRoute = AppBuilderRouteImport.update({
+  id: '/builder',
+  path: '/builder',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLessonsLessonIdRoute = AppLessonsLessonIdRouteImport.update({
+  id: '/$lessonId',
+  path: '/$lessonId',
+  getParentRoute: () => AppLessonsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/builder': typeof AppBuilderRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/lessons': typeof AppLessonsRouteWithChildren
+  '/app/playground': typeof AppPlaygroundRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/': typeof AppIndexRoute
+  '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app/builder': typeof AppBuilderRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/lessons': typeof AppLessonsRouteWithChildren
+  '/app/playground': typeof AppPlaygroundRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app': typeof AppIndexRoute
+  '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/builder': typeof AppBuilderRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/lessons': typeof AppLessonsRouteWithChildren
+  '/app/playground': typeof AppPlaygroundRoute
+  '/app/projects': typeof AppProjectsRoute
+  '/app/': typeof AppIndexRoute
+  '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/builder'
+    | '/app/dashboard'
+    | '/app/lessons'
+    | '/app/playground'
+    | '/app/projects'
+    | '/app/'
+    | '/app/lessons/$lessonId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app/builder'
+    | '/app/dashboard'
+    | '/app/lessons'
+    | '/app/playground'
+    | '/app/projects'
+    | '/app'
+    | '/app/lessons/$lessonId'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/builder'
+    | '/app/dashboard'
+    | '/app/lessons'
+    | '/app/playground'
+    | '/app/projects'
+    | '/app/'
+    | '/app/lessons/$lessonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +154,93 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/projects': {
+      id: '/app/projects'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/playground': {
+      id: '/app/playground'
+      path: '/playground'
+      fullPath: '/app/playground'
+      preLoaderRoute: typeof AppPlaygroundRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/lessons': {
+      id: '/app/lessons'
+      path: '/lessons'
+      fullPath: '/app/lessons'
+      preLoaderRoute: typeof AppLessonsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/builder': {
+      id: '/app/builder'
+      path: '/builder'
+      fullPath: '/app/builder'
+      preLoaderRoute: typeof AppBuilderRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/lessons/$lessonId': {
+      id: '/app/lessons/$lessonId'
+      path: '/$lessonId'
+      fullPath: '/app/lessons/$lessonId'
+      preLoaderRoute: typeof AppLessonsLessonIdRouteImport
+      parentRoute: typeof AppLessonsRoute
+    }
   }
 }
 
+interface AppLessonsRouteChildren {
+  AppLessonsLessonIdRoute: typeof AppLessonsLessonIdRoute
+}
+
+const AppLessonsRouteChildren: AppLessonsRouteChildren = {
+  AppLessonsLessonIdRoute: AppLessonsLessonIdRoute,
+}
+
+const AppLessonsRouteWithChildren = AppLessonsRoute._addFileChildren(
+  AppLessonsRouteChildren,
+)
+
+interface AppRouteChildren {
+  AppBuilderRoute: typeof AppBuilderRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppLessonsRoute: typeof AppLessonsRouteWithChildren
+  AppPlaygroundRoute: typeof AppPlaygroundRoute
+  AppProjectsRoute: typeof AppProjectsRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppBuilderRoute: AppBuilderRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppLessonsRoute: AppLessonsRouteWithChildren,
+  AppPlaygroundRoute: AppPlaygroundRoute,
+  AppProjectsRoute: AppProjectsRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
