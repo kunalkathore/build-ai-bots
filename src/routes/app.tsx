@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Sidebar } from "@/components/app/Sidebar";
 
 export const Route = createFileRoute("/app")({
@@ -18,6 +18,3 @@ function AppLayout() {
     </div>
   );
 }
-
-// Side-effect: this file owns the layout. /app/ alone redirects via index route below.
-export const _ = redirect;
