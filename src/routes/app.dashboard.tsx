@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useProgress } from "@/lib/progress/store";
 import { lessons } from "@/data/lessons";
 import { achievements } from "@/data/achievements";
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({
@@ -13,16 +14,30 @@ export const Route = createFileRoute("/app/dashboard")({
   component: Dashboard,
 });
 
+function weeklyData(events: { at: number; kind: string }[]) {
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return { key: d.toISOString().slice(0, 10), label: d.toLocaleDateString(undefined, { weekday: "short" }) };
+  });
+  return days.map((d) => ({
+    day: d.label,
+    actions: events.filter((e) => new Date(e.at).toISOString().slice(0, 10) === d.key).length,
+  }));
+}
+
 function Dashboard() {
   const state = useProgress((s) => s);
   const nextLesson = lessons.find((l) => !state.completedLessons.includes(l.id));
   const lessonPct = Math.round((state.completedLessons.length / lessons.length) * 100);
+  const challengesSolved = state.activity.filter((a) => a.kind === "lesson" || a.kind === "run").length;
+  const weekly = weeklyData(state.activity);
 
   const stats = [
-    { label: "lessons cleared", value: `${state.completedLessons.length}/${lessons.length}` },
-    { label: "bots deployed", value: state.bots.length },
+    { label: "lessons completed", value: `${state.completedLessons.length}/${lessons.length}` },
+    { label: "bots created", value: state.bots.length },
+    { label: "challenges solved", value: challengesSolved },
     { label: "day streak", value: state.streakDays },
-    { label: "achievements", value: `${state.achievements.length}/${achievements.length}` },
   ];
 
   return (
@@ -65,6 +80,24 @@ function Dashboard() {
           </div>
         ))}
       </section>
+
+      <section className="rounded-xl border border-border bg-card/60 p-6">
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="font-display text-xl font-semibold">Weekly activity</h2>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">last 7 days</p>
+        </div>
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weekly}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)", fontSize: 12 }} />
+              <Bar dataKey="actions" fill="var(--neon)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
+
 
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-border bg-card/60 p-6 lg:col-span-2">

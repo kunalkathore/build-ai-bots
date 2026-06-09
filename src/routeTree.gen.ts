@@ -9,16 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppProjectsRouteImport } from './routes/app.projects'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppPlaygroundRouteImport } from './routes/app.playground'
 import { Route as AppLessonsRouteImport } from './routes/app.lessons'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppBuilderRouteImport } from './routes/app.builder'
+import { Route as AppBotsRouteImport } from './routes/app.bots'
 import { Route as AppLessonsLessonIdRouteImport } from './routes/app.lessons.$lessonId'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -37,6 +51,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppProjectsRoute = AppProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPlaygroundRoute = AppPlaygroundRouteImport.update({
@@ -59,6 +78,11 @@ const AppBuilderRoute = AppBuilderRouteImport.update({
   path: '/builder',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBotsRoute = AppBotsRouteImport.update({
+  id: '/bots',
+  path: '/bots',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppLessonsLessonIdRoute = AppLessonsLessonIdRouteImport.update({
   id: '/$lessonId',
   path: '/$lessonId',
@@ -68,20 +92,28 @@ const AppLessonsLessonIdRoute = AppLessonsLessonIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/app/bots': typeof AppBotsRoute
   '/app/builder': typeof AppBuilderRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/lessons': typeof AppLessonsRouteWithChildren
   '/app/playground': typeof AppPlaygroundRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/': typeof AppIndexRoute
   '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/app/bots': typeof AppBotsRoute
   '/app/builder': typeof AppBuilderRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/lessons': typeof AppLessonsRouteWithChildren
   '/app/playground': typeof AppPlaygroundRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app': typeof AppIndexRoute
   '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
@@ -90,10 +122,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/app/bots': typeof AppBotsRoute
   '/app/builder': typeof AppBuilderRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/lessons': typeof AppLessonsRouteWithChildren
   '/app/playground': typeof AppPlaygroundRoute
+  '/app/profile': typeof AppProfileRoute
   '/app/projects': typeof AppProjectsRoute
   '/app/': typeof AppIndexRoute
   '/app/lessons/$lessonId': typeof AppLessonsLessonIdRoute
@@ -103,20 +139,28 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/auth'
+    | '/reset-password'
+    | '/app/bots'
     | '/app/builder'
     | '/app/dashboard'
     | '/app/lessons'
     | '/app/playground'
+    | '/app/profile'
     | '/app/projects'
     | '/app/'
     | '/app/lessons/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/app/bots'
     | '/app/builder'
     | '/app/dashboard'
     | '/app/lessons'
     | '/app/playground'
+    | '/app/profile'
     | '/app/projects'
     | '/app'
     | '/app/lessons/$lessonId'
@@ -124,10 +168,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
+    | '/auth'
+    | '/reset-password'
+    | '/app/bots'
     | '/app/builder'
     | '/app/dashboard'
     | '/app/lessons'
     | '/app/playground'
+    | '/app/profile'
     | '/app/projects'
     | '/app/'
     | '/app/lessons/$lessonId'
@@ -136,10 +184,26 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -166,6 +230,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/app/projects'
       preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/playground': {
@@ -196,6 +267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBuilderRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/bots': {
+      id: '/app/bots'
+      path: '/bots'
+      fullPath: '/app/bots'
+      preLoaderRoute: typeof AppBotsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/lessons/$lessonId': {
       id: '/app/lessons/$lessonId'
       path: '/$lessonId'
@@ -219,19 +297,23 @@ const AppLessonsRouteWithChildren = AppLessonsRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
+  AppBotsRoute: typeof AppBotsRoute
   AppBuilderRoute: typeof AppBuilderRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppLessonsRoute: typeof AppLessonsRouteWithChildren
   AppPlaygroundRoute: typeof AppPlaygroundRoute
+  AppProfileRoute: typeof AppProfileRoute
   AppProjectsRoute: typeof AppProjectsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBotsRoute: AppBotsRoute,
   AppBuilderRoute: AppBuilderRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppLessonsRoute: AppLessonsRouteWithChildren,
   AppPlaygroundRoute: AppPlaygroundRoute,
+  AppProfileRoute: AppProfileRoute,
   AppProjectsRoute: AppProjectsRoute,
   AppIndexRoute: AppIndexRoute,
 }
@@ -241,17 +323,9 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
