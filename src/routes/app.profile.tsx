@@ -41,7 +41,7 @@ function ProfilePage() {
   }
 
   async function save() {
-    if (!user) return;
+    if (!user || !profile) return;
     setSaving(true);
     const { error } = await supabase.from("profiles").update({
       full_name: profile.full_name,
