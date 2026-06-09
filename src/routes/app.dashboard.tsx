@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useProgress } from "@/lib/progress/store";
 import { lessons } from "@/data/lessons";
 import { achievements } from "@/data/achievements";
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({
@@ -13,16 +14,30 @@ export const Route = createFileRoute("/app/dashboard")({
   component: Dashboard,
 });
 
+function weeklyData(events: { at: number; kind: string }[]) {
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return { key: d.toISOString().slice(0, 10), label: d.toLocaleDateString(undefined, { weekday: "short" }) };
+  });
+  return days.map((d) => ({
+    day: d.label,
+    actions: events.filter((e) => new Date(e.at).toISOString().slice(0, 10) === d.key).length,
+  }));
+}
+
 function Dashboard() {
   const state = useProgress((s) => s);
   const nextLesson = lessons.find((l) => !state.completedLessons.includes(l.id));
   const lessonPct = Math.round((state.completedLessons.length / lessons.length) * 100);
+  const challengesSolved = state.activity.filter((a) => a.kind === "lesson" || a.kind === "run").length;
+  const weekly = weeklyData(state.activity);
 
   const stats = [
-    { label: "lessons cleared", value: `${state.completedLessons.length}/${lessons.length}` },
-    { label: "bots deployed", value: state.bots.length },
+    { label: "lessons completed", value: `${state.completedLessons.length}/${lessons.length}` },
+    { label: "bots created", value: state.bots.length },
+    { label: "challenges solved", value: challengesSolved },
     { label: "day streak", value: state.streakDays },
-    { label: "achievements", value: `${state.achievements.length}/${achievements.length}` },
   ];
 
   return (
