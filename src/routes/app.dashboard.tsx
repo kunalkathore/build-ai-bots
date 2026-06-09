@@ -81,6 +81,24 @@ function Dashboard() {
         ))}
       </section>
 
+      <section className="rounded-xl border border-border bg-card/60 p-6">
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="font-display text-xl font-semibold">Weekly activity</h2>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">last 7 days</p>
+        </div>
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weekly}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="day" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)", fontSize: 12 }} />
+              <Bar dataKey="actions" fill="var(--neon)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
+
+
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-border bg-card/60 p-6 lg:col-span-2">
           <div className="mb-4 flex items-baseline justify-between">
