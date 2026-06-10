@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ThemeToggle } from "@/hooks/use-theme";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,27 +42,28 @@ function Nav() {
   return (
     <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
       <Link to="/" className="flex items-center gap-2 font-mono text-sm">
-        <span className="grid h-8 w-8 place-items-center rounded-md border border-neon bg-background text-neon border-glow">◇</span>
+        <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-hero text-white shadow-elevate">◇</span>
         <span className="font-display text-base font-semibold tracking-tight">
-          DynamiBot<span className="text-neon">.AI</span>
+          DynamiBot<span className="text-gradient">.AI</span>
         </span>
       </Link>
       <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-widest text-muted-foreground md:flex">
-        <a href="#features" className="hover:text-foreground">/features</a>
-        <a href="#how-it-works" className="hover:text-foreground">/how it works</a>
+        <a href="#features" className="hover:text-foreground">Features</a>
+        <a href="#how-it-works" className="hover:text-foreground">How it works</a>
         <span className="flex items-center gap-1.5 opacity-60">
-          /pricing
-          <span className="rounded-sm bg-amber/20 px-1.5 py-0.5 text-[9px] text-amber">soon</span>
+          Pricing
+          <span className="rounded-sm bg-primary/15 px-1.5 py-0.5 text-[9px] text-primary">soon</span>
         </span>
-        <a href="#faq" className="hover:text-foreground">/faq</a>
+        <a href="#faq" className="hover:text-foreground">FAQ</a>
       </nav>
       <div className="flex items-center gap-3">
+        <ThemeToggle />
         <Link to="/auth" className="hidden font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground sm:inline">
           Log in
         </Link>
         <Link
           to="/auth"
-          className="rounded-md border border-neon bg-neon px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:bg-transparent hover:text-neon"
+          className="rounded-md bg-gradient-hero px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:opacity-90"
         >
           Get started
         </Link>
