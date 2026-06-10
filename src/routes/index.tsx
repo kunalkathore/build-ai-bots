@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ThemeToggle } from "@/hooks/use-theme";
 
 export const Route = createFileRoute("/")({
   head: () => ({
