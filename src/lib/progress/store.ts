@@ -155,7 +155,7 @@ export const progress = {
 
   async saveBot(bot: Omit<SavedBot, "id" | "createdAt">) {
     load();
-    let id = crypto.randomUUID();
+    let id: string = crypto.randomUUID();
     let createdAt = Date.now();
     if (state.userId) {
       const { data, error } = await supabase.from("bots").insert({
