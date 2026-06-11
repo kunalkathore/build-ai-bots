@@ -1,5 +1,6 @@
-// Tiny localStorage-backed reactive store. No external deps.
+// Reactive store backed by localStorage, with optional Supabase sync when signed in.
 import { useSyncExternalStore } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type SavedBot = {
   id: string;
@@ -19,6 +20,7 @@ export type ActivityEvent = {
 };
 
 export type ProgressState = {
+  userId: string | null;
   completedLessons: string[];
   bots: SavedBot[];
   achievements: string[];
@@ -30,6 +32,7 @@ export type ProgressState = {
 const KEY = "dynamibot.progress.v1";
 
 const initial: ProgressState = {
+  userId: null,
   completedLessons: [],
   bots: [],
   achievements: [],
@@ -62,9 +65,7 @@ function persist() {
   }
 }
 
-function notify() {
-  for (const l of listeners) l();
-}
+function notify() { for (const l of listeners) l(); }
 
 function set(updater: (s: ProgressState) => ProgressState) {
   state = updater(state);
@@ -72,9 +73,7 @@ function set(updater: (s: ProgressState) => ProgressState) {
   notify();
 }
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
+function todayKey() { return new Date().toISOString().slice(0, 10); }
 
 function bumpStreak() {
   const today = todayKey();
@@ -90,10 +89,7 @@ function addActivity(kind: ActivityEvent["kind"], text: string) {
   bumpStreak();
   set((s) => ({
     ...s,
-    activity: [
-      { id: crypto.randomUUID(), at: Date.now(), kind, text },
-      ...s.activity,
-    ].slice(0, 50),
+    activity: [{ id: crypto.randomUUID(), at: Date.now(), kind, text }, ...s.activity].slice(0, 50),
   }));
 }
 
@@ -101,30 +97,79 @@ function unlockAchievement(id: string, label: string) {
   if (state.achievements.includes(id)) return;
   set((s) => ({ ...s, achievements: [...s.achievements, id] }));
   addActivity("achievement", `Unlocked: ${label}`);
+  // best-effort remote
+  if (state.userId) {
+    void supabase.from("achievements").insert({ user_id: state.userId, achievement_name: label });
+  }
 }
 
 export const progress = {
   getSnapshot: () => state,
-  subscribe(cb: () => void) {
-    listeners.add(cb);
-    return () => listeners.delete(cb);
-  },
+  subscribe(cb: () => void) { listeners.add(cb); return () => listeners.delete(cb); },
   ensureLoaded: () => load(),
+
+  async setUser(userId: string | null) {
+    load();
+    set((s) => ({ ...s, userId }));
+    if (!userId) return;
+    // Hydrate from Supabase
+    const [{ data: bots }, { data: lessons }, { data: achievements }] = await Promise.all([
+      supabase.from("bots").select("*").order("created_at", { ascending: false }),
+      supabase.from("lessons_progress").select("*").eq("completion_status", "completed"),
+      supabase.from("achievements").select("*"),
+    ]);
+    set((s) => ({
+      ...s,
+      bots: (bots ?? []).map((b) => ({
+        id: b.id,
+        name: b.bot_name,
+        source: b.bot_code,
+        archetype: (b.description?.split("·")[0] ?? "").trim() || "Bot",
+        tone: (b.description?.split("·")[1] ?? "").trim() || "warm",
+        intents: [],
+        createdAt: new Date(b.created_at).getTime(),
+      })),
+      completedLessons: Array.from(new Set([...(s.completedLessons), ...((lessons ?? []).map((l) => l.lesson_id))])),
+      achievements: Array.from(new Set([...(s.achievements), ...((achievements ?? []).map((a) => a.achievement_name))])),
+    }));
+  },
 
   completeLesson(id: string, title: string) {
     load();
     if (state.completedLessons.includes(id)) return;
     set((s) => ({ ...s, completedLessons: [...s.completedLessons, id] }));
     addActivity("lesson", `Completed lesson: ${title}`);
+    if (state.userId) {
+      void supabase.from("lessons_progress").upsert({
+        user_id: state.userId,
+        lesson_id: id,
+        completion_status: "completed",
+        score: 100,
+        completed_at: new Date().toISOString(),
+      }, { onConflict: "user_id,lesson_id" });
+    }
     if (state.completedLessons.length >= 1) unlockAchievement("first_lesson", "First lesson done");
     if (state.completedLessons.length >= 5) unlockAchievement("five_lessons", "5 lessons cleared");
     if (state.completedLessons.length >= 12) unlockAchievement("curriculum", "Curriculum complete");
   },
 
-  saveBot(bot: Omit<SavedBot, "id" | "createdAt">) {
+  async saveBot(bot: Omit<SavedBot, "id" | "createdAt">) {
     load();
-    const id = crypto.randomUUID();
-    const full: SavedBot = { ...bot, id, createdAt: Date.now() };
+    let id: string = crypto.randomUUID();
+    let createdAt = Date.now();
+    if (state.userId) {
+      const { data, error } = await supabase.from("bots").insert({
+        user_id: state.userId,
+        bot_name: bot.name,
+        bot_code: bot.source,
+        description: `${bot.archetype} · ${bot.tone}`,
+      }).select().single();
+      if (!error && data) {
+        id = data.id;
+        createdAt = new Date(data.created_at).getTime();
+      }
+    }
+    const full: SavedBot = { ...bot, id, createdAt };
     set((s) => ({ ...s, bots: [full, ...s.bots] }));
     addActivity("bot", `Built bot: ${bot.name}`);
     unlockAchievement("first_bot", "First bot deployed");
@@ -134,6 +179,16 @@ export const progress = {
 
   deleteBot(id: string) {
     set((s) => ({ ...s, bots: s.bots.filter((b) => b.id !== id) }));
+    if (state.userId) void supabase.from("bots").delete().eq("id", id);
+  },
+
+  async saveSnippet(title: string, code: string) {
+    if (!state.userId) return null;
+    const { data } = await supabase.from("code_snippets").insert({
+      user_id: state.userId, title, code,
+    }).select().single();
+    addActivity("run", `Saved snippet: ${title}`);
+    return data;
   },
 
   recordRun(text: string) {
