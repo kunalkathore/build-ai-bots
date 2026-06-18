@@ -48,22 +48,22 @@ function Nav() {
         </span>
       </Link>
       <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-widest text-muted-foreground md:flex">
-        <a href="#features" className="hover:text-foreground">Features</a>
-        <a href="#how-it-works" className="hover:text-foreground">How it works</a>
+        <a href="#features" className="hover:text-foreground transition">Features</a>
+        <a href="#how-it-works" className="hover:text-foreground transition">How it works</a>
         <span className="flex items-center gap-1.5 opacity-60">
           Pricing
           <span className="rounded-sm bg-primary/15 px-1.5 py-0.5 text-[9px] text-primary">soon</span>
         </span>
-        <a href="#faq" className="hover:text-foreground">FAQ</a>
+        <a href="#faq" className="hover:text-foreground transition">FAQ</a>
       </nav>
       <div className="flex items-center gap-3">
         <ThemeToggle />
-        <Link to="/auth" className="hidden font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground sm:inline">
+        <Link to="/auth" className="hidden font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition sm:inline">
           Log in
         </Link>
         <Link
           to="/auth"
-          className="rounded-md bg-gradient-hero px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:opacity-90"
+          className="rounded-md bg-gradient-hero px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:translate-y-[-1px] hover:opacity-95"
         >
           Get started
         </Link>
