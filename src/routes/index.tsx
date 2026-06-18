@@ -48,22 +48,22 @@ function Nav() {
         </span>
       </Link>
       <nav className="hidden items-center gap-8 font-mono text-xs uppercase tracking-widest text-muted-foreground md:flex">
-        <a href="#features" className="hover:text-foreground">Features</a>
-        <a href="#how-it-works" className="hover:text-foreground">How it works</a>
+        <a href="#features" className="hover:text-foreground transition">Features</a>
+        <a href="#how-it-works" className="hover:text-foreground transition">How it works</a>
         <span className="flex items-center gap-1.5 opacity-60">
           Pricing
           <span className="rounded-sm bg-primary/15 px-1.5 py-0.5 text-[9px] text-primary">soon</span>
         </span>
-        <a href="#faq" className="hover:text-foreground">FAQ</a>
+        <a href="#faq" className="hover:text-foreground transition">FAQ</a>
       </nav>
       <div className="flex items-center gap-3">
         <ThemeToggle />
-        <Link to="/auth" className="hidden font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground sm:inline">
+        <Link to="/auth" className="hidden font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition sm:inline">
           Log in
         </Link>
         <Link
           to="/auth"
-          className="rounded-md bg-gradient-hero px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:opacity-90"
+          className="rounded-md bg-gradient-hero px-4 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:translate-y-[-1px] hover:opacity-95"
         >
           Get started
         </Link>
@@ -82,28 +82,42 @@ function Hero() {
             v0.4 · open beta · 12,408 bots deployed
           </div>
           <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight md:text-7xl lg:text-[84px]">
-            Build AI bots while{" "}
-            <span className="text-neon text-glow">learning</span> programming.
+            Learn AI by{" "}
+            <span className="text-gradient">shipping real bots.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
-            Master dynamic programming through a language built specifically for
-            creating intelligent AI agents. You don't study AI — you ship it.
+            DynamiBot is a programming language built around dynamic programming and AI agents. Start with zero code. Graduate with deployable bots.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               to="/auth"
-              className="group inline-flex items-center gap-3 rounded-md bg-neon px-6 py-3.5 font-mono text-sm font-semibold uppercase tracking-wider text-primary-foreground border-glow transition hover:translate-y-[-2px]"
+              className="group relative inline-flex items-center gap-3 rounded-md bg-gradient-hero px-7 py-4 font-mono text-sm font-semibold uppercase tracking-wider text-white shadow-elevate transition hover:translate-y-[-2px] hover:shadow-[0_20px_40px_-12px_rgba(99,102,241,0.5)]"
             >
-              Start learning free
+              Start building free
               <span className="transition group-hover:translate-x-1">→</span>
             </Link>
             <a
               href="#how-it-works"
-              className="inline-flex items-center gap-3 rounded-md border border-border px-6 py-3.5 font-mono text-sm uppercase tracking-wider transition hover:border-neon hover:text-neon"
+              className="group inline-flex items-center gap-3 rounded-md border border-border bg-card/50 px-6 py-4 font-mono text-sm uppercase tracking-wider text-foreground transition hover:border-neon hover:bg-card hover:text-neon"
             >
-              ▶ Watch demo
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-neon/10 text-neon transition group-hover:scale-110">▶</span>
+              Watch demo
             </a>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+            <div className="flex -space-x-2">
+              {["M", "R", "J", "S"].map((initial, i) => (
+                <span
+                  key={i}
+                  className="grid h-8 w-8 place-items-center rounded-full border-2 border-background bg-gradient-to-br from-neon to-magenta text-[11px] font-bold text-white"
+                >
+                  {initial}
+                </span>
+              ))}
+            </div>
+            <span>Trusted by 2,400+ learners and bootcamps</span>
           </div>
 
           <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8">
@@ -123,6 +137,10 @@ function Hero() {
         <div className="lg:col-span-5">
           <div className="relative">
             <div className="absolute -inset-4 rounded-2xl bg-gradient-to-br from-neon/20 via-magenta/10 to-transparent blur-2xl" />
+            <div className="absolute -top-6 -right-6 z-20 hidden animate-float items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-2 shadow-card backdrop-blur lg:inline-flex">
+              <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+              <span className="font-mono text-[10px] uppercase tracking-wider text-foreground">GreetBot online</span>
+            </div>
             <div className="scanlines relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
               <div className="flex items-center gap-2 border-b border-border bg-background/60 px-4 py-3">
                 <span className="h-2.5 w-2.5 rounded-full bg-destructive" />
